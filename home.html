@@ -3,10 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Responsive Web App</title>
+    <title>Vplaces</title>
     <link rel="stylesheet" href="home.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
 </head>
 <body>
     <header>
@@ -15,9 +22,7 @@
             <i class="fas fa-search"></i>
         </div>
     </header>
-
     <br>
-
     <h1>Categories</h1> <br>
 
     <main>
@@ -49,7 +54,7 @@
             <div class="card">
                 <a href="page5.html" class = "card-link">
                     <img src="img-assets/building.png" alt="Card 5" class="responsive-img">
-                    <p class="card-text">GOVERNMENT OFFICES</p>
+                    <p class="card-text">GOVERNMENT<br> OFFICES</p>
                 </a>
             </div>
             <div class="card">
@@ -64,7 +69,27 @@
     <nav class="bottom-navigation">
         <a href="home.html"><i class="fas fa-home"></i></a>
         <a href="profile.html"><i class="fas fa-user"></i></a>
+        <a href="maps.html"><i class="fas fa-map-marker-alt"></i></a>
     </nav>
+
+
+
+    
+<div class="user-cards"></div>
+
+<template class = "search-card">
+    <div class="s-card">
+        <div class="content">
+            <div class="header">My name</div>
+            <div class="body">email@gmail.com</div>
+        </div>
+        <div class="image">
+            <img src="img-assets/building.png" alt="User Image" height = "40px" width = "40px">
+        </div>
+    </div>
+</template>
+
+
 
     <script src="home.js"></script>
 </body>
