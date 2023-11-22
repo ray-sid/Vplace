@@ -1,8 +1,6 @@
 body {
     font-family: Arial, sans-serif;
     margin: 0;
-    padding: 0;
-    
 }
 
 header {
@@ -136,42 +134,47 @@ h1 {
 
 .user-cards {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    
+    flex-wrap: wrap;
 }
 
 .s-card {
     display: flex;
-    max-width: 100%;
-    border: 1px solid #ccc;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-
-
-.image {
-    flex: 1;
-    overflow: hidden;
-}
-
-.image img {
-    width: 100%;
-    height: auto;
+    border: 1px solid #ddd;
+    margin: 10px;
+    max-width: 400px; /* Adjust the maximum width as needed */
 }
 
 .content {
     flex: 1;
     padding: 15px;
+    font-size: 0.79em;
+    box-sizing: border-box;
 }
 
 .header {
-    font-size: 1.5em;
-    margin-bottom: 10px;
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 5px;
 }
 
 .body {
-    font-size: 1.2em;
     color: #555;
+}
+
+.image {
+    flex: 0 0 30%; /* 30% width */
+    box-sizing: border-box;
+}
+
+img {
+   max-width: 100%; 
+    height: auto;
+}
+
+.card-link{
+    text-decoration: none;
+}
+
+.hide{
+    display: none;
 }

@@ -1,0 +1,654 @@
+
+
+
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+
+<head>
+    <title>Mappls Maps API: Near By Example</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <link rel="icon" href="https://about.mappls.com/images/favicon.ico" type="image/x-icon">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   <!-- <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>-->
+    <script src = "hospital.js"></script>
+    <script src="https://apis.mappls.com/advancedmaps/api/246349f4966144cee7852ddb95920e9a/map_sdk?v=3.0&layer=vector"></script>
+    <!-- <script src="https://apis.mappls.com/advancedmaps/api/246349f4966144cee7852ddb95920e9a/map_sdk_plugins?v=3.0&libraries=nearby"></script> -->
+
+    <!-- <script src="js/Leaflet.Editable.js"></script>      
+                <script src="js/Path.Drag.js"></script>   -->
+
+    <style type="text/css">
+        /*map css **/
+        body,
+        html {
+            height: 100%;
+            font-family: Verdana, sans-serif, Arial;
+            color: #555;
+            margin: 0;
+            /*EOL*/
+            font-size: 12px;
+            padding: 0;
+            background: #fafafa
+        }
+
+        #map-container {
+            position: absolute;
+            left: 312px;
+            top: 46px;
+            right: 2px;
+            bottom: 2px;
+            border: 1px solid #cccccc;
+        }
+
+        #menu {
+            position: absolute;
+            left: 2px;
+            top: 46px;
+            width: 306px;
+            bottom: 2px;
+            border: 1px solid #cccccc;
+            background-color: #FAFAFA;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        li {
+            padding: 0 5px 10px 0;
+            cursor: pointer;
+            color: #333;
+        }
+
+        li:hover {
+            color: #00adff;
+            cursor: pointer;
+            text-decoration: underline
+        }
+
+        .map_marker {
+            position: relative;
+            width: 34px;
+            height: 48px
+        }
+
+        /*marker text span css*/
+        .my-div-span {
+            position: absolute;
+            left: 1.5em;
+            right: 1em;
+            top: 1.4em;
+            bottom: 2.5em;
+            font-size: 9px;
+            font-weight: bold;
+            width: 1px;
+            color: black;
+        }
+
+        .top-div {
+            border-bottom: 1px solid #e9e9e9;
+            padding: 10px 12px;
+            background: #fff;
+        }
+
+        .top-div-span1 {
+            font-size: 20px;
+        }
+
+        .top-div-span2 {
+            font-size: 16px;
+            color: #777
+        }
+
+        .btn-div {
+            padding: 16px 12px 6px 38px;
+        }
+
+        .msg-cont {
+            padding: 6px 12px 1px;
+            border-bottom: 1px solid #e9e9e9;
+        }
+
+        .msg-list {
+            line-height: 20px;
+            font-size: 12px;
+            color: #555;
+        }
+
+        .event-header {
+            padding: 14px 12px 6px 38px;
+            color: #666;
+        }
+
+        #event-log {
+            padding: 6px 12px 6px 38px;
+            color: #777;
+            font-size: 12px;
+            line-height: 22px;
+        }
+
+        .input-cls {
+            width: 254px;
+            margin-right: 10px;
+            padding: 5px;
+            border: 1px solid #ddd;
+            color: #555;
+        }
+
+        .div-label {
+            padding: 5px 0;
+            font-size: 13px;
+            color: #222;
+        }
+
+        .menu-sub {
+            padding: 0 12px 0 12px;
+        }
+
+        #result {
+            border-top: 1px solid #e9e9e9;
+            padding: 10px;
+            margin-top: 12px;
+        }
+
+        #poidetail {
+            border-bottom: 1px solid #e9e9e9;
+        }
+
+        .popup-tab {
+            width: auto;
+            padding: 10px;
+            font-size: 10px;
+            font-type: bold;
+        }
+
+        .btnStyle {
+            cursor: pointer;
+            border-radius: 15px;
+            background-color: #4D90FE;
+            border: 1px solid #3079ED;
+            color: #FFFFFF;
+            padding: 4px;
+            margin-top: -10px;
+            margin-bottom: 4px;
+            width: 28%
+        }
+    </style>
+</head>
+
+<body onload="loadMap();">
+
+    <div class="top-div">
+        <span class="top-div-span1">Mappls Maps API:</span>
+        <span class="top-div-span2">Nearby Example</span>
+    </div>
+    <div id="menu">
+        <div class="menu-sub">
+            <div class="div-label">Enter Latitude</div>
+            <input type="text" class="input-cls" value="" id="lat" placeholder="latitude" autocomplete="off" autofocus="" onkeydown="if (event.which == 13 || event.keyCode == 13)
+                                               $('#search').trigger('click'); " /><br />
+
+            <div class="div-label">Enter Longitude</div>
+            <input type="text" class="input-cls" id="lan" placeholder="longitude" autocomplete="off" autofocus="" value="" />
+
+            <div class="div-label">Enter Keyword</div>
+            <input type="text" class="input-cls" id="keyword" placeholder="keyword" autocomplete="off" autofocus="" value="coffee" onkeydown="if (event.which == 13 || event.keyCode == 13)
+                                               $('#search').trigger('click'); " />
+
+            <div class="div-label">Page</div>
+            <input type="text" class="input-cls" id="page" placeholder="page" autocomplete="off" autofocus="" value="" /><span id="allPages"></span>
+
+            <div class="div-label">Sort</div>
+            <select id="sort" class="input-cls">
+                <option value="">Select</option>
+                <option value="dist:asc">Distance Ascending</option>
+                <option value="dist:desc">Distance Descending</option>
+                <option value="imp">POI Importance</option>
+                <!-- <option value="name:asc">Name Ascending</option>
+								<option value="name:desc">Name Descending</option> -->
+
+            </select>
+
+            <div class="div-label">Radius</div>
+            <input type="text" class="input-cls" id="radius" placeholder="radius in meter" autocomplete="off" autofocus="" value="" onkeypress="return isNumber(event)" maxlength="3" />
+
+
+            <div class="div-label">Bounds</div>
+            <input type="text" class="input-cls" id="bounds" placeholder="bounds" autocomplete="off" autofocus="" value="" />
+
+            <div class="div-label">Region</div>
+
+            <select id="region" class="input-cls">
+                <option value="">Select</option>
+                <option value="ind">India</option>
+                <option value="bgd">Bangladesh</option>
+                <option value="btn">Bhutan</option>
+                <option value="npl">Nepal</option>
+                <option value="lka">Sri Lanka</option>
+
+            </select>
+            <br /><br />
+            &nbsp;&nbsp;
+            <button id="search" onclick="get_near_by_result(document.getElementById('lat').value, document.getElementById('lan').value, 'searchbykeyword',document.getElementById('page').value,document.getElementById('sort').value,document.getElementById('radius').value,document.getElementById('bounds').value,document.getElementById('region').value)">Search</button>
+            <!--button onclick="pageReload();">Clear</button-->
+        </div>
+        <div id="result"></div>
+        <div id="poidetail"></div>
+    </div>
+    <div id="map-container">
+        <div id="event-log"></div>
+    </div>
+
+    <script type="text/javascript">
+        var url_result;
+        var marker = new Array();
+        var all_result = [];
+        var map;
+        var map = null;
+        var show_marker = new Array();
+        var polygons = [];
+        var polygon = "";
+        var visbility = false;
+        var p1 = null;
+        var poly;
+        var pts;
+        var val = '';
+
+        function loadMap() {
+            var centre = [22.268764, 82.390136];
+            map = new mappls.Map('map-container', {
+                center: centre,
+                zoom: 4,
+                editable: true,
+                zoomControl: true,
+                search: false,
+                hybrid: true
+            });
+            /***function that modifies both center map position and zoom level.***/
+            // map.setView(centre, 4);
+            var i = 0;
+            var secureThisArea = Array();
+            map.on('click', function(e) {
+                var m = [];
+                var val = document.getElementById('radius').value;
+                if (val == '') {
+                    m[0] = parseFloat(e.lngLat.lat).toFixed(6);
+                    m[1] = parseFloat(e.lngLat.lng).toFixed(6);;
+                    secureThisArea[i] = m; //e.lngLat.lat + ", " + e.lngLat.lng;
+                    createpoly(secureThisArea);
+                    i++;
+                }
+            });
+        }
+
+        function createpoly(secureThisArea) {
+            arr = [];
+            for (var j = 0; j < secureThisArea.length; j++) {
+                arr.push({
+                    "lat": secureThisArea[j][0],
+                    "lng": secureThisArea[j][1]
+                });
+            }
+
+            var val = document.getElementById('radius').value;
+            if (val == '') {
+                latlngs = secureThisArea; //[[28.7041, 77.1025], [28.6692, 77.4538]];
+                //console.log(arr);
+                setTimeout(() => {
+                    if (arr) {
+                        mappls.remove({
+                            map: map,
+                            layer: polygon
+                        });
+                        // MapmyIndia.remove({map:map,layer:Polyline});
+                    }
+                    if (arr.length === 2) {
+                        polygon = new mappls.Polyline({
+                            map: map,
+                            path: latlngs,
+                            strokeColor: 'blue',
+                            strokeOpacity: 1,
+                            strokeWeight: 5
+                        });
+                    } else if (arr.length > 2) {
+                        polygon = new mappls.Polygon({
+                            map: map,
+                            paths: arr,
+                            fillColor: 'blue',
+                            fillOpacity: 0.5,
+                            strokeColor: 'blue',
+                            strokeOpacity: 1,
+                            strokeWeight: 7
+                        });
+                    } else {}
+                    var bounds = polygon.getBounds();
+                    document.getElementById('bounds').value = bounds.getNorthWest().lat + "," + bounds.getNorthWest().lng + ";" + bounds.getSouthEast().lat + "," + bounds.getSouthEast().lng;
+                }, 100);
+                document.getElementById('radius').disabled = true;
+            }
+        }
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition);
+        } else {
+            x.innerHTML = "Geolocation is not supported by this browser.";
+        }
+
+        function showPosition(position) {
+            document.getElementById('lan').value = position.coords.longitude;
+            document.getElementById('lat').value = position.coords.latitude;
+        }
+
+        $('.srch_dv').hide();
+
+        /***
+         1. Create a Mappls Map by simply calling new MapmyIndia.Map() and passing it a html div id, all other parameters are optional...
+         2. All leaflet mapping functions can be called simply by using "L" object.
+         3. In future, Mappls may extend the customised/forked Leaflet object to enhance mapping functionality for developers, 
+         which will be clearly documented in the Mappls API documentation section.
+         ***/
+
+        /*function to get geocode result from the url*/
+        function get_near_by_result(lat, lng, searchmethod, page, sort, radius, bounds, region) {
+
+            var keyword = document.getElementById('keyword');
+            if (searchmethod == 'searchbykeyword') {
+                if (keyword.value == '') {
+                    keyword.focus();
+                    return false;
+                }
+            }
+            document.getElementById('result').innerHTML = '<div style="padding: 0 12px; color: #777">Loading..</div>';
+            /*get JSON resp*/
+            if (lat == '' || lng == '') {
+                var map_center = map.getCenter();
+                getUrlResult(keyword.value, map_center.lat, map_center.lng, page, sort, radius, bounds, region);
+            } else {
+                getUrlResult(keyword.value, lat, lng, page, sort, radius, bounds, region);
+            }
+        }
+        /*function to get json response from the url*/
+        function getUrlResult(keyword, lat, lng, page, sort, radius, bounds, region) {
+            remove_btn();
+            add_btn(lat, lng);
+            $.ajax({
+                type: "POST",
+                dataType: 'text',
+                url: "getResponseAtlasNearby.php",
+                async: false,
+                data: {
+                    query: JSON.stringify(keyword),
+                    current_lat: JSON.stringify(lat),
+                    current_lng: JSON.stringify(lng),
+                    page: JSON.stringify(page),
+                    sort: JSON.stringify(sort),
+                    radius: JSON.stringify(radius),
+                    bounds: JSON.stringify(bounds),
+                    region: JSON.stringify(region)
+
+                },
+                success: function(result) {
+                    var resdata = JSON.parse(result);
+                    var jsondata;
+                    //console.log(resdata);
+                    if (resdata.status == 'success') {
+                        try {
+                            jsondata = JSON.parse(resdata.data);
+                        } catch (e) {
+                            var error_response = "No Result"
+                            document.getElementById('result').innerHTML = error_response + '</ul></div>';
+                            return false;
+                        }
+
+                        if (jsondata.suggestedLocations.length > 0) {
+                            /*success*/
+                            display_near_by_result(jsondata.suggestedLocations, jsondata.pageInfo); /*display results on success*/
+                        }
+                        /*handle the error codes and put the responses in divs.Error codes can be found in the documentation*/
+                        else {
+                            var error_response = "No Result"
+                            document.getElementById('result').innerHTML = error_response + '</ul></div>'; /***put response result in div****/
+                        }
+                    } else {
+                        var error_message = resdata.data;
+                        document.getElementById('result').innerHTML = error_message + '</ul></div>'; /***put response result in div****/
+                        remove_markers();
+                    }
+                }
+            });
+        }
+        /*function to display geocode result*/
+        function display_near_by_result(data, page) {
+            details = [];
+            remove_markers(); /***********remove existing marker from map**/
+            var result_string = '<div style="padding: 0 12px;color:green;font-size:13px">POI</div><div style="font-size: 13px">\n\
+                                    <ul style="list-style-type:decimal;color:green; padding:2px 2px 0 30px">';
+            var num = 1;
+            /*show the item data*/
+            //alert(page.totalPages);
+            //alert(page.pageSize);
+            document.getElementById('allPages').innerHTML = "/" + page.totalPages;
+            data.forEach(function(item) {
+                if (item != '' && item != null && item != "undefined") {
+                    var lng = item.longitude;
+                    var lat = item.latitude;
+                    var pos = [lat, lng]; /***position of marker*****/
+                    var content = new Array();
+                    if (item.eLoc != '')
+                        content.push('<tr><td style="white-space:nowrap">eLoc</td><td width="10px">:</td><td>' + item.eLoc + '</td></tr>');
+                    if (item.placeName != '')
+                        content.push('<tr><td style="white-space:nowrap">placeName</td><td width="10px">:</td><td width="70%" style="word-wrap: break-word;">' + item.placeName + '</td></tr>');
+                    if (item.placeAddress != '')
+                        content.push('<tr><td style="white-space:nowrap">placeAddress</td><td width="10px">:</td><td style="width: 75% !important; word-wrap: break-word;">' + item.placeAddress + '</td></tr>');
+                    if (item.type != '')
+                        content.push('<tr><td style="white-space:nowrap">type</td><td width="10px">:</td><td>' + item.type + '</td></tr>');
+                    if (item.latitude != '')
+                        content.push('<tr><td style="white-space:nowrap">latitude</td><td width="10px">:</td><td>' + item.latitude + '</td></tr>');
+                    if (item.longitude != '')
+                        content.push('<tr><td style="white-space:nowrap">longitude</td><td width="10px">:</td><td>' + item.longitude + '</td></tr>');
+                    if (item.distance != '')
+                        content.push('<tr><td style="white-space:nowrap">distance</td><td width="10px">:</td><td>' + item.distance + '</td></tr>');
+                    details.push(content.join(""));
+
+                    show_markers(num, pos); /**display markers***/
+                    result_string += '<li onclick="show_place_details(' + (num++) + ',' + lng + ',' + lat + ')">' + item.placeName + '  (' + item.distance + ')' + '</li>';
+                } else {
+                    var error_response = "Not found.";
+                    document.getElementById('result').innerHTML = error_response + '</ul></div>'; /***put response result in div****/
+                }
+            });
+            document.getElementById('result').innerHTML = result_string + '</ul></div>'; /***put geocode result in div****/
+            mappls_fit_markers_into_bound(); /***fit map in marker area***/
+        }
+
+        function show_markers(num, pos) {
+            // console.log(pos);
+            if (num > 9) {
+                // var icon = L.divIcon({
+                //     className: 'my-div-icon',
+                //     html: "<img class='map_marker'  src=" + "'https://www.mappls.com/images/2.png'>" + '<span class="my-div-span" style="left:1.3em !important;">' + (num) + '</span>',
+                //     iconSize: [10, 10],
+                //     popupAnchor: [12, -10]
+                // });
+                var htmlnum = '<span class="my-div-span" style="left:1.3em !important;">' + (num) + '</span>';
+            } else {
+                // var icon = L.divIcon({
+                //     className: 'my-div-icon',
+                //     html: "<img class='map_marker'  src=" + "'https://www.mappls.com/images/2.png'>" + '<span class="my-div-span" style="left:1.6em; top:1.4em;">' + (num) + '</span>',
+                //     iconSize: [10, 10],
+                //     popupAnchor: [12, -10]
+                // });
+                var htmlnum = '<span class="my-div-span" style="left:1.6em; top:1em;">' + (num) + '</span>';
+            } /*function that creates a div over a icon and display content on the div*/
+
+            marker[num] = new mappls.Marker({
+                map: map,
+                position: pos,
+                fitBounds: true,
+                icon: 'https://www.mappls.com/images/2.png',
+                draggable: false,
+                html: htmlnum,
+                popupOptions: {
+                    openPopup: false
+                },
+                popupHtml: createPopup(num - 1),
+            });
+
+            // marker[num] = L.marker(pos, {icon: icon}).bindPopup(createPopup(num - 1)).addTo(map);
+            show_marker.push(marker[num]);
+        }
+
+        function show_place_details(num, lng, lat) {
+            show_info_window(lat, lng, num - 1, marker[num]);
+        }
+
+        /*function to show pop up on marker**/
+        var infoWindow_object;
+
+        function show_info_window(lat, lng, num, marker) {
+
+            if (infoWindow_object) {
+                mappls.remove({
+                    map: map,
+                    layer: infoWindow_object
+                });
+            }
+
+            infoWindow_object = new mappls.InfoWindow({
+                position: {
+                    "lng": lng,
+                    "lat": lat
+                },
+                map: map,
+                content: createPopup(num),
+                offset: [0, -30],
+                maxWidth: 300
+            });
+
+            // marker.bindPopup("");
+            // var popup = marker.getPopup();
+            // popup.setContent(createPopup(num)).update();
+            // marker.openPopup();
+        }
+
+        function createPopup(num) {
+            return '<table class="popup-tab">' + details[num] + '</table>';
+        }
+        /*function to remove  marker from the map*/
+        function remove_markers() {
+            for (var k = 0; k < show_marker.length; k++) {
+                mappls.remove({
+                    map: map,
+                    layer: show_marker[k]
+                });
+                //map.removeLayer(show_marker[k]);/*Remove markers from map*/
+            }
+        }
+        /*function to fit the maps in the bounds of the marker*/
+        function mappls_fit_markers_into_bound() {
+            var lalt = [];
+            for (var i = 0; i < show_marker.length; i++) {
+                lalt.push([show_marker[i]._lngLat.lat, show_marker[i]._lngLat.lng]);
+            }
+            //console.log(lalt);
+            fitBounds = new mappls.fitBounds({
+                map: map,
+                cType: 0,
+                bounds: lalt,
+                options: {
+                    padding: 120,
+                    duration: 1000
+                }
+            });
+            // var group = new L.featureGroup(show_marker);
+            // map.fitBounds(group.getBounds());
+        }
+
+        /*function to remove  current location from the map*/
+        function remove_btn() {
+            if ($('.leaflet-marker-pane > div').length > 1) {
+                $('.leaflet-marker-pane').find('div').remove();
+            } else {
+                $('.leaflet-marker-pane').find('div').first().remove();
+            }
+        }
+        /*function to add  current loaction to the map*/
+        function add_btn(lat, lng) {
+            var cr = new mappls.Marker({
+                map: map,
+                position: [lat, lng],
+                icon: 'https://www.mappls.com/images/current_location.png',
+                draggable: false,
+                popupOptions: {
+                    openPopup: false
+                },
+            });
+            map.setCenter([lat, lng]);
+            map.setZoom(15);
+
+            // var btn=L.divIcon({className:'',html:"<img src='https://www.mappls.com/images/current_location.png' height='30px'>"});
+
+            // var cr=L.marker([lat, lng], {icon: btn});
+            // map.addLayer(cr);
+            // map.setView(new L.LatLng(lat,lng), 15);
+
+        }
+
+        function isPointInLayer(pt, layer) {
+            var within = false;
+            var x = pt.lat,
+                y = pt.lng;
+            for (var ii = 0; ii < layer.getLatLngs().length; ii++) {
+                var polyPoints = layer.getLatLngs()[ii];
+                for (var i = 0, j = polyPoints.length - 1; i < polyPoints.length; j = i++) {
+                    var xi = polyPoints[i].lat,
+                        yi = polyPoints[i].lng;
+                    var xj = polyPoints[j].lat,
+                        yj = polyPoints[j].lng;
+
+                    var intersect = ((yi > y) != (yj > y)) &&
+                        (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+                    if (intersect)
+                        within = !within;
+                }
+            }
+            return within;
+        };
+
+        function isNumber(evt) {
+            evt = (evt) ? evt : window.event;
+            var charCode = (evt.which) ? evt.which : evt.keyCode;
+            if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+                return false;
+            }
+
+            if (charCode != '') {
+                document.getElementById('bounds').disabled = true;
+            } else if (charCode == '') {
+                document.getElementById('bounds').disabled = false;
+            }
+            return true;
+        }
+
+        document.getElementById('radius').addEventListener('keyup', function(event) {
+            //alert("ddd");
+            var val = document.getElementById('radius').value;
+            if (val == '') {
+                document.getElementById('bounds').disabled = false;
+                document.getElementById('bounds').value = '';
+            }
+        });
+        document.getElementById('bounds').addEventListener('keyup', function(event) {
+            var val = document.getElementById('bounds').value;
+            if (val == '') {
+                document.getElementById('radius').disabled = false;
+                map.remove(polygon);
+                loadMap();
+            } else {
+
+                document.getElementById('radius').disabled = true;
+            }
+        });
+    </script>
+</body>
+
+</html>

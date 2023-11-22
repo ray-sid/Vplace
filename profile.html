@@ -22,13 +22,51 @@
     color: #f4f4f4;
 }
 
-    </style>
+</style>
 </head>
 <body>
     <nav class="bottom-navigation">
         <a href="home.html"><i class="fas fa-home"></i></a>
-        <a href="profile.html"><i class="fas fa-user"></i></a>
+        <a  href = "index.html" id="profile-link"><i class="fas fa-user"></i></a>
         <a href="maps.html"><i class="fas fa-map-marker-alt"></i></a>
     </nav>
 </body>
+
+<script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+  
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyBqNRgvWcUodEh_M0QD3BMGgQ4yXzYWark",
+      authDomain: "vplace-45016.firebaseapp.com",
+      projectId: "vplace-45016",
+      storageBucket: "vplace-45016.appspot.com",
+      messagingSenderId: "572186974833",
+      appId: "1:572186974833:web:584c7742f6a20c4a4899d0"
+    };
+  
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+
+
+    // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
+    // Check authentication status
+    firebase.auth().onAuthStateChanged(function(user) {
+    const profileLink = document.getElementById('profile-link');
+
+    if (user) {
+        // User is logged in, show profile page
+        profileLink.href = 'profile.html';
+    } else {
+        // User is not logged in, show login page
+        profileLink.href = 'login.html';
+    }
+    });
+  </script>
+  
 </html>

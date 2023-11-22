@@ -41,9 +41,46 @@
     <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7776.08215956813!2d79.15155623488769!3d12.96922320000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bad479f0ccbe067%3A0xfef222e5f36ecdeb!2sVellore%20Institute%20of%20Technology!5e0!3m2!1sen!2sin!4v1699940817399!5m2!1sen!2sin" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
 
     <nav class="bottom-navigation">
-        <a href="home.html"><i class="fas fa-home"></i></a>
-        <a href="profile.html"><i class="fas fa-user"></i></a>
+        <a href="index.html"><i class="fas fa-home"></i></a>
+        <a  href = "index.html" id="profile-link"><i class="fas fa-user"></i></a>
         <a href="maps.html"><i class="fas fa-map-marker-alt"></i></a>
     </nav>
 </body>
+
+<script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+  
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyBqNRgvWcUodEh_M0QD3BMGgQ4yXzYWark",
+      authDomain: "vplace-45016.firebaseapp.com",
+      projectId: "vplace-45016",
+      storageBucket: "vplace-45016.appspot.com",
+      messagingSenderId: "572186974833",
+      appId: "1:572186974833:web:584c7742f6a20c4a4899d0"
+    };
+  
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+
+
+    // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
+    // Check authentication status
+    firebase.auth().onAuthStateChanged(function(user) {
+    const profileLink = document.getElementById('profile-link');
+
+    if (user) {
+        // User is logged in, show profile page
+        profileLink.href = 'profile.html';
+    } else {
+        // User is not logged in, show login page
+        profileLink.href = 'login.html';
+    }
+    });
+  </script>
 </html>

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+
+<head>
+    <title>Mappls Maps API: Near By Example</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <link rel="icon" href="https://about.mappls.com/images/favicon.ico" type="image/x-icon">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   <!-- <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>-->
+    <script src = "hospital2.js"></script>
+    <script src = "hospital2.js"></script>
+    <script src="https://apis.mappls.com/advancedmaps/api/246349f4966144cee7852ddb95920e9a/map_sdk?v=3.0&layer=vector"></script>
+    <script src="https://apis.mappls.com/advancedmaps/api/lrFxI-iSEg8ktludBF9CtxrXvlpOJ63ZJgfZo-iTI-ioPwwqijtiRc6YgdKqEQCD53g3-teiUyijNiNTVGXwkRcJP1u6b8wa/map_sdk_plugins?v=3.0&libraries=nearby"></script>
+
+    <!-- <script src="js/Leaflet.Editable.js"></script>      
+                <script src="js/Path.Drag.js"></script>   -->
+
+    <style type="text/css">
+        /*map css **/
+        body,
+        html {
+            height: 100%;
+            font-family: Verdana, sans-serif, Arial;
+            color: #555;
+            margin: 0;
+            /*EOL*/
+            font-size: 12px;
+            padding: 0;
+            background: #fafafa
+        }
+
+        #map-container {
+            position: absolute;
+            left: 312px;
+            top: 46px;
+            right: 2px;
+            bottom: 2px;
+            border: 1px solid #cccccc;
+        }
+
+        #menu {
+            position: absolute;
+            left: 2px;
+            top: 46px;
+            width: 306px;
+            bottom: 2px;
+            border: 1px solid #cccccc;
+            background-color: #FAFAFA;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        li {
+            padding: 0 5px 10px 0;
+            cursor: pointer;
+            color: #333;
+        }
+
+        li:hover {
+            color: #00adff;
+            cursor: pointer;
+            text-decoration: underline
+        }
+
+        .map_marker {
+            position: relative;
+            width: 34px;
+            height: 48px
+        }
+
+        /*marker text span css*/
+        .my-div-span {
+            position: absolute;
+            left: 1.5em;
+            right: 1em;
+            top: 1.4em;
+            bottom: 2.5em;
+            font-size: 9px;
+            font-weight: bold;
+            width: 1px;
+            color: black;
+        }
+
+        .top-div {
+            border-bottom: 1px solid #e9e9e9;
+            padding: 10px 12px;
+            background: #fff;
+        }
+
+        .top-div-span1 {
+            font-size: 20px;
+        }
+
+        .top-div-span2 {
+            font-size: 16px;
+            color: #777
+        }
+
+        .btn-div {
+            padding: 16px 12px 6px 38px;
+        }
+
+        .msg-cont {
+            padding: 6px 12px 1px;
+            border-bottom: 1px solid #e9e9e9;
+        }
+
+        .msg-list {
+            line-height: 20px;
+            font-size: 12px;
+            color: #555;
+        }
+
+        .event-header {
+            padding: 14px 12px 6px 38px;
+            color: #666;
+        }
+
+        #event-log {
+            padding: 6px 12px 6px 38px;
+            color: #777;
+            font-size: 12px;
+            line-height: 22px;
+        }
+
+        .input-cls {
+            width: 254px;
+            margin-right: 10px;
+            padding: 5px;
+            border: 1px solid #ddd;
+            color: #555;
+        }
+
+        .div-label {
+            padding: 5px 0;
+            font-size: 13px;
+            color: #222;
+        }
+
+        .menu-sub {
+            padding: 0 12px 0 12px;
+        }
+
+        #result {
+            border-top: 1px solid #e9e9e9;
+            padding: 10px;
+            margin-top: 12px;
+        }
+
+        #poidetail {
+            border-bottom: 1px solid #e9e9e9;
+        }
+
+        .popup-tab {
+            width: auto;
+            padding: 10px;
+            font-size: 10px;
+            font-type: bold;
+        }
+
+        .btnStyle {
+            cursor: pointer;
+            border-radius: 15px;
+            background-color: #4D90FE;
+            border: 1px solid #3079ED;
+            color: #FFFFFF;
+            padding: 4px;
+            margin-top: -10px;
+            margin-bottom: 4px;
+            width: 28%
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="top-div">
+        <span class="top-div-span1">Mappls Maps API:</span>
+        <span class="top-div-span2">Nearby Example</span>
+    </div>
+    <div id="menu">
+        <div class="menu-sub">
+            <div class="div-label">Enter Latitude</div>
+            <input type="text" class="input-cls" value="" id="lat" placeholder="latitude" autocomplete="off" autofocus="" onkeydown="if (event.which == 13 || event.keyCode == 13)
+                                               $('#search').trigger('click'); " /><br />
+
+            <div class="div-label">Enter Longitude</div>
+            <input type="text" class="input-cls" id="lan" placeholder="longitude" autocomplete="off" autofocus="" value="" />
+
+            <div class="div-label">Enter Keyword</div>
+            <input type="text" class="input-cls" id="keyword" placeholder="keyword" autocomplete="off" autofocus="" value="coffee" onkeydown="if (event.which == 13 || event.keyCode == 13)
+                                               $('#search').trigger('click'); " />
+
+            <div class="div-label">Page</div>
+            <input type="text" class="input-cls" id="page" placeholder="page" autocomplete="off" autofocus="" value="" /><span id="allPages"></span>
+
+            <div class="div-label">Sort</div>
+            <select id="sort" class="input-cls">
+                <option value="">Select</option>
+                <option value="dist:asc">Distance Ascending</option>
+                <option value="dist:desc">Distance Descending</option>
+                <option value="imp">POI Importance</option>
+                <!-- <option value="name:asc">Name Ascending</option>
+								<option value="name:desc">Name Descending</option> -->
+
+            </select>
+
+        
+            <div class="div-label">Bounds</div>
+            <input type="text" class="input-cls" id="bounds" placeholder="bounds" autocomplete="off" autofocus="" value="" />
+
+            <div class="div-label">Region</div>
+
+            <select id="region" class="input-cls">
+                <option value="">Select</option>
+                <option value="ind">India</option>
+                <option value="bgd">Bangladesh</option>
+                <option value="btn">Bhutan</option>
+                <option value="npl">Nepal</option>
+                <option value="lka">Sri Lanka</option>
+
+            </select>
+            <br /><br />
+            &nbsp;&nbsp;
+            <button id="search" onclick="get_near_by_result(document.getElementById('lat').value, document.getElementById('lan').value, 'searchbykeyword',document.getElementById('page').value,document.getElementById('sort').value,document.getElementById('bounds').value,document.getElementById('region').value)">Search</button>
+            <!--button onclick="pageReload();">Clear</button-->
+        </div>
+        <div id="result"></div>
+        <div id="poidetail"></div>
+    </div>
+    <div id="map-container">
+        <div id="event-log"></div>
+    </div>
+
+    <script type="text/javascript">
+       /*Nearby plugin initialization*/
+var options = {
+  divId: 'nearby_search',
+  keywords: 'atm',
+  refLocation: [28.632735, 77.219696],
+  fitbounds: true,
+  geolocation: true,
+  click_callback: function(d) {
+    alert(d);
+  }
+}
+
+var callback;
+
+mappls.nearby(options, callback);
+    </script>
+</body>
+
+</html>

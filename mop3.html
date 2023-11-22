@@ -1,0 +1,71 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    #map {
+      height: 400px;
+    }
+  </style>
+   <script src="https://apis.mapmyindia.com/advancedmaps/v1/96dHZVzsAutmRlzzw8UU5sDk4MX6bICK51B_G9edvlfQBN8OK9rsswZyRgr1tGofJQ6RSdlXcHxb00omfuWU9w==/map_load?v=1.3"></script>
+ <!--  <script src="https://apis.mapmyindia.com/advancedmaps/api/96dHZVzsAutmRlzzw8UU5sDk4MX6bICK51B_G9edvlfQBN8OK9rsswZyRgr1tGofJQ6RSdlXcHxb00omfuWU9w==/map_sdk_plugins"></script> -->
+</head>
+<body>
+
+  <div id="map"></div>
+
+  <script>
+    // Replace 'YOUR_API_KEY' with your MapmyIndia API key
+    var apiKey = '96dHZVzsAutmRlzzw8UU5sDk4MX6bICK51B_G9edvlfQBN8OK9rsswZyRgr1tGofJQ6RSdlXcHxb00omfuWU9w==';
+
+    function findNearbyHospitals(latitude, longitude) {
+      var radius = 5000; // Adjust the radius as needed
+
+      // Construct the URL for the MapmyIndia Nearby API
+      var apiUrl = `https://atlas.mapmyindia.com/api/places/nearby/json?keywords=hospital&refLocation=${latitude},${longitude}&radius=${radius}&key=${apiKey}`;
+
+      fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+          // Create a container for the list of hospitals
+          var hospitalsList = document.createElement('ul');
+
+          // Iterate through the data and add each hospital to the list
+          data.suggestedLocations.forEach(hospital => {
+            var listItem = document.createElement('li');
+            listItem.textContent = hospital.placeName + ' - Coordinates: ' + hospital.latitude + ', ' + hospital.longitude;
+            hospitalsList.appendChild(listItem);
+          });
+
+          // Append the list to the body
+          document.body.appendChild(hospitalsList);
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    function getLocation() {
+      // Check if the Geolocation API is supported
+      if (navigator.geolocation) {
+        // Get the user's current location
+        navigator.geolocation.getCurrentPosition(position => {
+          var latitude = position.coords.latitude;
+          var longitude = position.coords.longitude;
+
+          // Call the function to find nearby hospitals
+          findNearbyHospitals(latitude, longitude);
+        }, error => {
+          console.error('Error getting location:', error.message);
+        });
+      } else {
+        console.error('Geolocation is not supported by this browser.');
+      }
+    }
+
+    // Call the function to get the user's location and find nearby hospitals
+    getLocation();
+  </script>
+
+</body>
+</html>
